@@ -178,7 +178,7 @@ class VHACD_OT_VHACD(Operator):
             print(f'Exporting mesh for V-HACD: {obj_filename}...')
             bpy.ops.object.select_all(action='DESELECT')
             ob.select_set(True)
-            bpy.ops.export_scene.obj(filepath=obj_filename, use_selection=True)
+            bpy.ops.wm.obj_export(filepath=obj_filename, export_selected_objects=True)
 
             # change cd to the data path + use integers for the bool values (Pascal case True/False is not valid)
             cmd_line = (f'cd "{data_path}" && "{vhacd_path}" "{obj_filename}" -h {self.maxConvexHull} -r {self.voxelResolution} -e {self.volumeErrorPercent} -d {self.maxRecursionDepth} -s {int(self.shrinkwrapOutput)} -f {self.fillMode} -v {self.maxHullVertCount} -a {int(self.runAsync)} -l {self.minEdgeLength} -o obj -p {int(self.optimalSplit)}')
@@ -192,8 +192,7 @@ class VHACD_OT_VHACD(Operator):
             vhacd_process.wait()
 
             # read file in specified data path
-            from os import path
-            bpy.ops.import_scene.obj(filepath=data_path + "\decomp.obj")
+            bpy.ops.wm.obj_import(filepath=data_path + "\decomp.obj")
 
             #bpy.ops.import_scene.obj(filepath=get_last_generated_file_path())
             imported = bpy.context.selected_objects
